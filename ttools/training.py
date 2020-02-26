@@ -176,7 +176,7 @@ class Trainer(object):
         LOG.debug("Adding callback {}".format(callback))
         self.callbacks.append(callback)
 
-    def train(self, dataloader, num_epochs=None, val_dataloader=None):
+    def train(self, dataloader, num_epochs=None, val_dataloader=None, start_epoch=0):
         """Main training loop. This starts the training procedure.
 
         Args:
@@ -186,7 +186,7 @@ class Trainer(object):
             batches
         """
         self.__training_start(dataloader)
-        epoch = 0
+        epoch = start_epoch
         while num_epochs is None or epoch < num_epochs:
             self.__epoch_start(epoch)
             for batch_idx, batch in enumerate(dataloader):
@@ -379,6 +379,7 @@ class Checkpointer(object):
         for f in all_checkpoints:
             try:
                 extras, meta = self.load(f)
+                LOG.info("Loaded {}!".format(f))
                 return extras, meta
             except Exception as e:
                 LOG.debug(
